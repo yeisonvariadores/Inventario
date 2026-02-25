@@ -7,9 +7,9 @@
                     placeholder="Buscar usuario..." />
             </div>
 
-            <flux:modal.trigger name="create-equipo">
-                <flux:button variant="primary" color="blue">
-                    Agregar Usuario
+            <flux:modal.trigger name="crear-usuario">
+                <flux:button variant="primary" color="blue" >
+                    Crear Usuario
                 </flux:button>
             </flux:modal.trigger>
         </div>
@@ -60,11 +60,8 @@
                         <tr>
                             <td class="p-4">
                                 <div class="flex items-center gap-2">
-                                    <img
-                                        class="size-10 rounded-full object-cover"
-                                        src="https://img.freepik.com/free-icon/user_318-749758.jpg"
-                                        alt="avatar"
-                                    />
+                                    {{ $usuario->id }}
+                                    <flux:avatar icon="user" color="blue" />
 
                                     <div class="font-medium">
                                         {{ $usuario->nombre }}
@@ -106,7 +103,8 @@
         <div class="p-4">
             {{ $usuarios->links() }}
         </div>
-    </div>
 
+        @livewire('usuario.modalcreate')
+    </div>
 </div>
 

@@ -5,6 +5,7 @@ namespace App\Livewire\Usuario;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Usuario;
+use Livewire\Attributes\On;
 
 class UsuarioIndex extends Component
 {
@@ -15,6 +16,11 @@ class UsuarioIndex extends Component
     public $buscarUsuario = '';
     public $sortBy = 'created_at';
     public $sortDirection = 'ASC';
+
+    #[On('refresh-usuarios')]
+    public function refreshUsuarios()
+    {
+    }
 
     protected array $sortTable = [
         'id' => 'usuarios.id',
