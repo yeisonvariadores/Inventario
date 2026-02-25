@@ -21,7 +21,7 @@ Sistema de inventario desarrollado con **Laravel + Livewire** para la gestión d
 
 * **PHP 8.2+**
 * **Laravel 12**
-* **Livewire 3**
+* **Livewire 4**
 * **MySQL**
 * **Tailwind CSS**
 * **Flux UI**
