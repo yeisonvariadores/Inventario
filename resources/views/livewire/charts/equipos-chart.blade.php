@@ -9,35 +9,38 @@
 </div>
 
 @push('scripts')
-    <script>
-        let chartEquipos;
+<script>
+    let chartEquipos;
 
-        document.addEventListener('livewire:navigated', () => {
-            const canvas = document.getElementById('chartEquipos');
-            if (!canvas) return;
+    function renderChartEquipos() {
+        const canvas = document.getElementById('chartEquipos');
+        if (!canvas) return;
 
-            chartEquipos?.destroy();
+        chartEquipos?.destroy();
 
-            chartEquipos = new Chart(canvas, {
-                type: 'doughnut',
-                data: {
-                    labels: @json($chartData['labels']),
-                    datasets: [{
-                        data: @json($chartData['values']),
-                        backgroundColor: [
-                            '#72E9C5', // Equipos Disponibles (verde)
-                            '#FFD15C', // Equipos Asignados (Amarrillo)
-                            '#FF587A', // Equipos Hurtados (Rojo)
-                        ],
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                }
-            });
+        chartEquipos = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: @json($chartData['labels']),
+                datasets: [{
+                    data: @json($chartData['values']),
+                    backgroundColor: [
+                        '#72E9C5',
+                        '#FFD15C',
+                        '#FF587A',
+                    ],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+            }
         });
-    </script>
+    }
+
+    document.addEventListener('livewire:load', renderChartEquipos);
+    document.addEventListener('livewire:navigated', renderChartEquipos);
+</script>
 @endpush

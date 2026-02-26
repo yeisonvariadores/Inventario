@@ -3,7 +3,7 @@
 namespace App\Livewire\Charts;
 
 use Livewire\Component;
-use App\Models\Equipos;
+use App\Models\Equipo;
 
 class EquiposChart extends Component
 {
@@ -12,9 +12,9 @@ class EquiposChart extends Component
         return [
             
             'values' => [
-                Equipos::where('estado_id', 1)->count(),
-                Equipos::where('estado_id', 2)->count(),
-                Equipos::where('estado_id', 3)->count(),
+                Equipo::where('estado_id', 1)->count(),
+                Equipo::where('estado_id', 2)->count(),
+                Equipo::where('estado_id', 3)->count(),
             ],
             'labels' => ['Disponibles', 'Asignados', 'Hurtados'],
         ];
