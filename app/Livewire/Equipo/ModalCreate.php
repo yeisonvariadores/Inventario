@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire\Equipos;
+namespace App\Livewire\Equipo;
 
 use App\Models\Ciudad;
 use Livewire\Component;
 use App\Models\Estado;
 use Flux\Flux;
-use App\Models\Equipos;
+use App\Models\Equipo;
 use Illuminate\Validation\Rule;
 
 /**
@@ -23,6 +23,117 @@ use Illuminate\Validation\Rule;
 class ModalCreate extends Component
 {
 
+    // =========================
+    // PROPIEDADES DEL FORMULARIO
+    // =========================
+    public $marca;
+    public $modelo;
+    public $serial;
+    public $activo_fijo;
+    public $almacenamiento;
+    public $ram;
+    public $sistema_operativo;
+    public $ciudad_id;
+
+    // =========================
+    // VALIDACIONES
+    // =========================
+    protected $rules = [
+        'marca' => 'required|string|max:100',
+        'modelo' => 'required|string|max:100',
+        'serial' => 'required|string|max:100|unique:equipos,serial',
+        'activo_fijo' => [
+            'required',
+            'string',
+            'regex:/^VARI[1-4][0-9]{3,5}$/u',
+            'unique:equipos,activo_fijo'
+        ],
+        'almacenamiento' => 'required|integer|min:120|max:4096',
+        'ram' => 'required|integer|in:2,4,8,16,32,64,128',
+        'sistema_operativo' => 'required|string|in:Windows 10 Pro,Windows 11 Pro,macOS',
+        'ciudad_id' => 'required|exists:ciudades,id'
+    ];
+
+    protected $messages = [
+        'activo_fijo.regex' => 'El activo fijo debe tener formato VARI + dígito inicial (1-4) + 3-5 números. Ejemplo: VARI1001, VARI21234, VARI312345',
+        'activo_fijo.unique' => 'Este activo fijo ya está registrado',
+        'activo_fijo.required' => 'El activo fijo es obligatorio',
+        'serial.unique' => 'Este serial ya está registrado',
+        'almacenamiento.min' => 'El almacenamiento mínimo es 120 GB',
+        'almacenamiento.max' => 'El almacenamiento máximo es 4096 GB',
+        'ram.in' => 'La RAM debe ser 2,4,8,16,32,64 o 128 GB',
+        'sistema_operativo.required' => 'Debe seleccionar un sistema operativo',
+        'sistema_operativo.in' => 'Seleccione Windows 10 Pro, Windows 11 Pro o macOS',
+    ];
+
+    public function updatedActivoFijo($value)
+    {
+        $this->activo_fijo = strtoupper($value);
+    }
+
+    /**
+     * Validación en tiempo real para activo_fijo
+     */
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'activo_fijo') {
+            $this->validateOnly('activo_fijo');
+        }
+        if ($propertyName === 'serial') {
+            $this->validateOnly('serial');
+        }
+        if ($propertyName === 'ram') {
+            $this->validateOnly('ram');
+        }
+        if ($propertyName === 'almacenamiento') {
+            $this->validateOnly('almacenamiento');
+        }
+    }
+
+    // =========================
+    // MÉTODO CREAR EQUIPO
+    // =========================
+    public function crearEquipo()
+    {
+        // Asegurar mayúsculas antes de guardar
+        $this->activo_fijo = strtoupper($this->activo_fijo);
+        $this->validate();
+            
+            Equipo::create([
+                'marca' => $this->marca,
+                'modelo' => $this->modelo,
+                'serial' => $this->serial,
+                'activo_fijo' => $this->activo_fijo,
+                'almacenamiento' => $this->almacenamiento ,
+                'ram' => $this->ram,
+                'sistema_operativo' => $this->sistema_operativo,
+                'estado_id' => 1,
+                'ciudad_id' => $this->ciudad_id,
+            ]);
+
+            $this->reset([
+                'marca',
+                'modelo',
+                'serial',
+                'almacenamiento',
+                'ram',
+                'sistema_operativo',
+                'activo_fijo',
+                 'ciudad_id',
+            ]);
+
+            Flux::modal('create-equipo')->close();
+
+            $this->dispatch('swal', [
+                'icon' => 'success',
+                'title' => 'Equipo Asignado',
+                'text' => 'El equipo se creo correctamente',
+            ]);
+            
+            $this->dispatch('refresh-equipos');
+
+        }
+
     
 
     /**
@@ -34,7 +145,7 @@ class ModalCreate extends Component
      */
     public function render()
     {
-        return view('livewire.equipos.modal-create', [
+        return view('livewire.equipo.modal-create', [
             'estados' => Estado::all(),
             'ciudades' => Ciudad::all(),
         ]);

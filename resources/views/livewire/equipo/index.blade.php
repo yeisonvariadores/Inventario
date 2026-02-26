@@ -99,5 +99,8 @@
                     {{ $equipos->links() }}
                 </div>
             </div>
+
+            @livewire('equipo.modal-create')
+
         </div>
     </div>
